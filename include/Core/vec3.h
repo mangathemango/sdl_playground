@@ -2,6 +2,9 @@
 
 #include <SDL.h>
 #include <iostream>
+#include <format>
+#include <cmath>
+
 using namespace std;
 
 class Vec3 {
@@ -27,9 +30,7 @@ class Vec3 {
     // Equality
     bool operator==(const Vec3 &other) const;
     bool operator!=(const Vec3 &other) const;
-
-    // <<
-    ostream& operator<<(ostream& os) const;
+    
 
     // Direction vector
     Vec3 up();
@@ -48,3 +49,4 @@ class Vec3 {
     Vec3 lerp(const Vec3 &other, float t);
 };
 
+ostream& operator<<(ostream& os, const Vec3& v);

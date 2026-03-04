@@ -13,8 +13,10 @@
 #include <app.h>
 #include <iostream>
 #include <filesystem>
+#include <vec3.h>
 
 int main() {
+    std::cout << Vec3(1,2,3) << std::endl;
     if (App_Start()) return 1;
     SDL_Event event;
     while (app.state.running) {
