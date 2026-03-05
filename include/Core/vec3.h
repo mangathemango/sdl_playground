@@ -10,6 +10,7 @@ class Vec3 {
     float x,y,z;
     Vec3(float x, float y, float z);
 
+    // Operator overrides:
     // Basic operations
     Vec3 operator-() const;
     Vec3 operator+(const Vec3 &other) const;
@@ -27,8 +28,23 @@ class Vec3 {
     bool operator==(const Vec3 &other) const;
     bool operator!=(const Vec3 &other) const;
 
-    // ostream
+    // <<
     ostream& operator<<(ostream& os) const;
 
+    // Direction vector
+    Vec3 up();
+    Vec3 down();
+    Vec3 right();
+    Vec3 left();
+    Vec3 forward();
+    Vec3 backward();
+
+    // More operations
+    Vec3 cross(const Vec3 &other) const;
+    Vec3 dot(const Vec3 &other) const;
+    Vec3 normalize() const;
+    float magnitude() const;
+    float distance(const Vec3 &other) const;
+    Vec3 lerp(const Vec3 &other, float t);
 };
 
