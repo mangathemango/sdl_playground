@@ -100,14 +100,14 @@ void Input_PreUpdate() {
     // Reset other input states
     _input.mouse.scrollUp = false;
     _input.mouse.scrollDown = false;
-    _input.mouse.motion = (Vec2) {0, 0};
+    _input.mouse.motion = Vec2(0, 0);
     
     // Update mouse position
     int windowMouseX, windowMouseY;
     SDL_GetMouseState(&windowMouseX, &windowMouseY);
     float screenMouseX, screenMouseY;
     SDL_RenderWindowToLogical(app.resources.renderer, windowMouseX, windowMouseY, &screenMouseX, &screenMouseY);
-    _input.mouse.position = (Vec2){screenMouseX, screenMouseY};
+    _input.mouse.position = Vec2(screenMouseX, screenMouseY);
 }
 
 

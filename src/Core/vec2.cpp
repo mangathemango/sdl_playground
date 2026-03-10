@@ -1,381 +1,150 @@
-/**
- * @file vec2.c
- * @brief 2D vector operations library
- *
- * Implements a comprehensive set of vector operations for 2D space,
- * supporting game physics, transformations, and coordinate handling.
- * 
- * @author Mango
- * @date 2025-02-28
- */
-
-// Written by Mango on 28/02/2025
-
 #include <vec2.h>
 #include <math.h>
 #ifndef M_PI
 #define M_PI 3.14159265358979323846f
 #endif
 
-/**
- * [Utility] Returns the magnitude of a vector.
- * Magnitude is the length of a vector.
- * 
- * @param v The vector to get the magnitude of.
- * @return The magnitude (length) of vector v.
- */
-float Vec2_Magnitude(Vec2 v) {
-    return sqrt(v.x * v.x + v.y * v.y);
+Vec2::Vec2() {
+    this->x = 0;
+    this->y = 0;
 }
 
-/**
- * [Utility] Returns the magnitude of a vector.
- * Magnitude is the length of a vector.
- * 
- * @param v The vector to get the magnitude of.
- * @return The magnitude (length) of vector v.
- */
-float Vec2_Distance(Vec2 a, Vec2 b) {
-    return Vec2_Magnitude(Vec2_Subtract(b, a));
+Vec2::Vec2(float size) {
+    this->x = size;
+    this->y = size;
 }
 
-/**
- * [Utility] Returns the normalized vector of the input vector.
- * A normalized vector has a magnitude of 1 and the same direction as v.
- * 
- * @param v The vector to normalize.
- * @return The normalized vector of v.
- */
-Vec2 Vec2_Normalize(Vec2 v) {
-    float mag = Vec2_Magnitude(v);
-    if (mag < 0.0001f) return Vec2_Zero;
-    return (Vec2) {v.x / mag, v.y / mag};
+Vec2::Vec2(float x, float y) {
+    this->x = x;
+    this->y = y;
 }
 
-/**
- * [Utility] Adds two vectors.
- * 
- * @param a The first vector.
- * @param b The second vector.
- * @return The resulting vector from a + b.
- */
-Vec2 Vec2_Add(Vec2 a, Vec2 b) {
-    return (Vec2) {a.x + b.x, a.y + b.y};
+Vec2 Vec2::operator-() const {
+    return Vec2(
+        -x,
+        -y
+    );
+}
+Vec2 Vec2::operator+(const Vec2 &other) const{ 
+    return Vec2(
+        x + other.x, 
+        y + other.y
+    );
 }
 
-/**
- * [Utility] Increments the vector pointed to by a with vector b.
- * 
- * @param a Pointer to the vector to increment.
- * @param b The vector to add.
- * @return The updated vector a (a + b).
- */
-Vec2 Vec2_Increment(Vec2* a, Vec2 b) {
-    a->x += b.x;
-    a->y += b.y;
-    return *a;
+Vec2 Vec2::operator-(const Vec2 &other) const{
+    return Vec2(
+        x - other.x, 
+        y - other.y
+    );
+}
+Vec2 Vec2::operator*(float scalar) const {
+    return Vec2(
+        x * scalar, 
+        y * scalar
+    );   
+}
+Vec2 Vec2::operator/(float scalar) const {
+    return Vec2(
+        x / scalar, 
+        y / scalar
+    );   
+}
+// Some syntax sugar operations
+Vec2& Vec2::operator+=(const Vec2 &other) {
+    x += other.x;
+    y += other.y;
+    return *this;
+}
+Vec2& Vec2::operator-=(const Vec2 &other) {
+    x -= other.x;
+    y -= other.y;
+    return *this;
+}
+Vec2& Vec2::operator*=(float scalar) {
+    x *= scalar;
+    y *= scalar;
+    return *this;
+}
+Vec2& Vec2::operator/=(float scalar) {
+    x /= scalar;
+    y /= scalar;
+    return *this;
+}
+// Equality
+bool Vec2::operator==(const Vec2 &other) const {
+    return x == other.x && y == other.y;
+};
+bool Vec2::operator!=(const Vec2 &other) const {
+    return x != other.x || y != other.y;
+};
+// Direction vector
+Vec2 Vec2::up() {
+    return Vec2(0,-1);
+};
+Vec2 Vec2::down() {
+    return Vec2(0, 1);
+};
+Vec2 Vec2::right() {
+    return Vec2(1, 0);
+};
+Vec2 Vec2::left() {
+    return Vec2(-1, 0);
+};
+// More operations
+float Vec2::cross(const Vec2 &other) const {
+    return x * other.y - y * other.x; 
+};
+float Vec2::dot(const Vec2 &other) const {
+    return x * other.x + y * other.y;
+};
+Vec2 Vec2::abs() const {
+    return Vec2(std::abs(x), std::abs(y));
+};
+Vec2 Vec2::normalize() const {
+    float m = magnitude();
+    if (m == 0) return *this;
+    return (*this) / m;
+}
+float Vec2::magnitude() const {
+    return std::sqrt(x*x + y*y);
+}
+float Vec2::distance(const Vec2 &other) const {
+    return (*this - other).magnitude();
+}
+Vec2 Vec2::lerp(const Vec2 &other, float t) const {
+    return *this + (other - *this) * t;
 }
 
-/**
- * [Utility] Subtracts vector b from vector a.
- * 
- * @param a The vector to subtract from.
- * @param b The vector to subtract.
- * @return The result of a - b.
- */
-Vec2 Vec2_Subtract(Vec2 a, Vec2 b) {
-    return (Vec2) {a.x - b.x, a.y - b.y};
+Vec2 Vec2::rotateRadian(float angle) const {
+    return Vec2(
+        x * cos(angle) - y * sin(angle),
+        x * sin(angle) + y * cos(angle)
+    );
 }
 
-/**
- * [Utility] Decrements the vector pointed to by a by vector b.
- * 
- * @param a Pointer to the vector to decrement.
- * @param b The vector by which a will be decremented.
- * @return The updated vector a after subtraction.
- */
-Vec2 Vec2_Decrement(Vec2* a, Vec2 b) {
-    a->x -= b.x;
-    a->y -= b.y;
-    return *a;
+Vec2 Vec2::rotateDegrees(float angle) const {
+    float radian = angle * M_PI / 180;
+    return rotateRadian(radian);
 }
 
-/**
- * [Utility] Multiplies a vector by a scalar.
- * 
- * @param v The vector to multiply.
- * @param scalar The scalar multiplier.
- * @return The resulting vector v * scalar.
- */
-Vec2 Vec2_Multiply(Vec2 v, float scalar) {
-    return (Vec2) {v.x * scalar, v.y * scalar};
+Vec2 Vec2::rotateRadianAround(float angle, const Vec2& other) const {
+    return (*this - other).rotateRadian(angle) + other;
+}
+Vec2 Vec2::rotateDegreesAround(float angle, const Vec2& other) const {
+    float radian = angle * M_PI / 180;
+    return rotateRadianAround(radian, other);
 }
 
-/**
- * [Utility] Divides a vector by a scalar.
- * 
- * @param v The vector to divide.
- * @param scalar The scalar divisor.
- * @return The resulting vector v / scalar.
- */
-Vec2 Vec2_Divide(Vec2 v, float scalar) {
-    return (Vec2) {v.x / scalar, v.y / scalar};
+float Vec2::angleBetween(const Vec2& other) const
+{
+    float cross = x * other.y - y * other.x;
+    float dot   = x * other.x + y * other.y;
+
+    return atan2f(cross, dot);
 }
 
-/**
- * [Utility] Returns the dot product of two vectors.
- * 
- * @param a The first vector.
- * @param b The second vector.
- * @return The dot product (a.x * b.x + a.y * b.y).
- */
-float Vec2_Dot(Vec2 a, Vec2 b) {
-    return a.x * b.x + a.y * b.y;
-}
-
-/**
- * [Utility] Linearly interpolates between vectors a and b.
- * 
- * @param a The start vector.
- * @param b The destination vector.
- * @param t The interpolation factor (0.0 to 1.0).
- * @return The interpolated vector between a and b.
- */
-Vec2 Vec2_Lerp(Vec2 a, Vec2 b, float t) {
-    return (Vec2) {a.x + (b.x - a.x) * t, a.y + (b.y - a.y) * t};
-}
-
-/**
- * [Utility] Rotates a vector around the origin by a given angle (in radians).
- * 
- * @param v The vector to rotate.
- * @param angle The angle to rotate by in radians.
- * @return The rotated vector.
- */
-Vec2 Vec2_RotateRadians(Vec2 v, float angle) {
-    float x = v.x * cos(angle) - v.y * sin(angle);
-    float y = v.x * sin(angle) + v.y * cos(angle);
-    return (Vec2) {x, y};
-}
-
-/**
- * [Utility] Rotates a vector around the origin by a given angle (in degrees).
- * 
- * @param v The vector to rotate.
- * @param angle The angle in degrees.
- * @return The rotated vector.
- */
-Vec2 Vec2_RotateDegrees(Vec2 v, float angle) {
-    float angleRadians = angle * (M_PI / 180.0f);
-    return Vec2_RotateRadians(v, angleRadians);
-}
-
-/**
- * [Utility] Rotates a point around a center by a given angle (in radians).
- * Translates the point to origin-relative, rotates it, then translates back.
- * 
- * @param point The point to rotate.
- * @param center The pivot for rotation.
- * @param angle The rotation angle in radians.
- * @return The rotated point.
- */
-Vec2 Vec2_RotateAroundRadians(Vec2 point, Vec2 center, float angle) {
-    Vec2 translated = Vec2_Subtract(point, center);
-    Vec2 rotated = Vec2_RotateRadians(translated, angle);
-    return Vec2_Add(rotated, center);
-}
-
-/**
- * [Utility] Rotates a point around a center by a given angle (in degrees).
- * 
- * @param point The point to rotate.
- * @param center The pivot for rotation.
- * @param angle The rotation angle in degrees.
- * @return The rotated point.
- */
-Vec2 Vec2_RotateAroundDegrees(Vec2 point, Vec2 center, float angle) {
-    float angleRadians = angle * (M_PI / 180.0f);
-    return Vec2_RotateAroundRadians(point, center, angleRadians);
-}
-
-/**
- * [Utility] Converts a position and size into an SDL_Rect.
- * 
- * @param position The top-left position.
- * @param size The width and height.
- * @return The SDL_Rect corresponding to position and size.
- */
-SDL_Rect Vec2_ToRect(Vec2 position, Vec2 size) {
-    return (SDL_Rect) {
-        position.x,
-        position.y,
-        size.x,
-        size.y
-    };
-}
-
-/**
- * [Utility] Converts a position and size into a centered SDL_Rect.
- * Centers the rect at the specified position.
- * 
- * @param position The center position.
- * @param size The width and height.
- * @return A centered SDL_Rect.
- */
-SDL_Rect Vec2_ToCenteredRect(Vec2 position, Vec2 size) {
-    return (SDL_Rect) {
-        position.x - size.x / 2,
-        position.y - size.y / 2,
-        size.x,
-        size.y
-    };
-}
-
-/**
- * [Utility] Converts a position and size to a centered position.
- * Useful for positioning sprites centered on a coordinate.
- * 
- * @param position The top-left position.
- * @param size The size of the object.
- * @return The centered position.
- */
-Vec2 Vec2_ToCenteredPosition(Vec2 position, Vec2 size) {
-    return (Vec2) {
-        position.x - size.x / 2,
-        position.y - size.y / 2
-    };
-}
-
-/**
- * [Utility] Extracts a position and size from an SDL_Rect.
- * 
- * @param rect The SDL_Rect to decompose.
- * @param position Pointer to store the position.
- * @param size Pointer to store the size.
- */
-void Vec2_FromRect(SDL_Rect rect, Vec2* position, Vec2* size) {
-    position->x = rect.x;
-    position->y = rect.y;
-    size->x = rect.w;
-    size->y = rect.h;
-}
-
-/**
- * [Utility] Clamps a vector between min and max vectors.
- * Ensures the vector's components stay within the provided bounds.
- * 
- * @param v The vector to clamp.
- * @param min The minimum values.
- * @param max The maximum values.
- * @return The clamped vector.
- */
-Vec2 Vec2_Clamp(Vec2 v, Vec2 min, Vec2 max) {
-    return (Vec2) {
-        fmin(fmax(v.x, min.x), max.x),
-        fmin(fmax(v.y, min.y), max.y)
-    };
-}
-
-/**
- * [Utility] Returns a vector that is the component-wise maximum of a and b.
- * 
- * @param a The first vector.
- * @param b The second vector.
- * @return A vector of max components.
- */
-Vec2 Vec2_Max(Vec2 a, Vec2 b) {
-    return (Vec2) {
-        fmax(a.x, b.x),
-        fmax(a.y, b.y)
-    };
-}
-
-/**
- * [Utility] Returns a vector that is the component-wise minimum of a and b.
- * 
- * @param a The first vector.
- * @param b The second vector.
- * @return A vector of min components.
- */
-Vec2 Vec2_Min(Vec2 a, Vec2 b) {
-    return (Vec2) {
-        fmin(a.x, b.x),
-        fmin(a.y, b.y)
-    };
-}
-
-/**
- * [Utility] Returns the absolute values of a vector's components.
- * 
- * @param v The vector to compute absolute values for.
- * @return A vector where each component is the absolute value of v.
- */
-Vec2 Vec2_Abs(Vec2 v) {
-    return (Vec2) {
-        fabs(v.x),
-        fabs(v.y)
-    };
-}
-
-/**
- * [Utility] Converts an SDL_Point to a Vec2.
- * 
- * @param point The SDL_Point to convert.
- * @return The corresponding Vec2.
- */
-Vec2 Vec2_FromPoint(SDL_Point point) {
-    return (Vec2) {
-        point.x,
-        point.y
-    };
-}
-
-/**
- * [Utility] Converts a Vec2 to an SDL_Point.
- * 
- * @param v The Vec2 to convert.
- * @return The corresponding SDL_Point.
- */
-SDL_Point Vec2_ToPoint(Vec2 v) {
-    return (SDL_Point) {
-        v.x,
-        v.y
-    };
-}
-
-bool Vec2_AreEqual(Vec2 a, Vec2 b) {
-    return a.x == b.x && a.y == b.y;
-}
-
-Vec2 Vec2_Square(float side) {
-    return (Vec2) {side, side};
-}
-
-SDL_Rect Vec2_ToSquareRect(Vec2 position, float side) {
-    return Vec2_ToRect(position, Vec2_Square(side));
-}
-
-SDL_Rect Vec2_ToCenteredSquareRect(Vec2 position, float side) {
-    return Vec2_ToCenteredRect(position, Vec2_Square(side));
-}
-
-/**
- * @brief Calculates the angle between two vectors in degrees.
- * 
- * @param a The first vector.
- * @param b The second vector.
- * @return The angle in degrees between the two vectors.
- * This means that Vec2_RotateDegrees(a, angle) will be equal to b.
- */
-float Vec2_AngleBetween(Vec2 a, Vec2 b) {
-    float cross = a.x * b.y - a.y * b.x;
-    
-    // Dot product for angle magnitude
-    float dot = Vec2_Dot(a, b);
-    
-    // Angle in radians
-    float angle = atan2(cross, dot);
-    
-    // Convert to degrees
-    return angle * (180.0f / M_PI);
+ostream& operator<<(ostream& os, Vec2& v) {
+    os << "Vec2(" << v.x << "," << v.y << ")";
+    return os;
 }
