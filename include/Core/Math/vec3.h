@@ -33,12 +33,12 @@ struct Vec3 {
     
 
     // Direction vector
-    Vec3 up();
-    Vec3 down();
-    Vec3 right();
-    Vec3 left();
-    Vec3 forward();
-    Vec3 backward();
+    static Vec3 up();
+    static Vec3 down();
+    static Vec3 right();
+    static Vec3 left();
+    static Vec3 forward();
+    static Vec3 backward();
 
     // More operations
     Vec3 cross(const Vec3 &other) const;
