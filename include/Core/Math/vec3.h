@@ -1,8 +1,6 @@
 #pragma once
 
-#include <SDL.h>
 #include <iostream>
-#include <format>
 #include <cmath>
 
 using namespace std;
