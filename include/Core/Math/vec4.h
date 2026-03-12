@@ -10,6 +10,7 @@ struct Vec4 {
     public:
     float x,y,z,w;
 
+    Vec4();
     Vec4(float x, float y, float z, float w);
     Vec4(Vec3 v, float w);
 
