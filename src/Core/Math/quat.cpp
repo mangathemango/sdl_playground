@@ -18,6 +18,10 @@ Quat::Quat(float w, float x, float y, float z) {
     this->z = z;
 }
 
+Quat Quat::identity() {
+    return Quat(1,0,0,0);
+}
+
 Quat Quat::inverse() const {
     return Quat(w, -x, -y, -z);
 }
