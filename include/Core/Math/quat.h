@@ -10,7 +10,7 @@ struct Quat {
     Quat(Vec3 axis, float angle);
     Quat(float w, float x, float y, float z);
 
-    static Quat identity() const;
+    static Quat identity();
     Quat inverse() const;
     Quat normalise() const;
 
