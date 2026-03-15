@@ -3,8 +3,12 @@
 #include <iostream>
 #include <string>
 
+class GameObj; // View include/Engine/GameObj.h
+
 class Component {
     public:
+    GameObj* parent;
+
     virtual void display(std::ostream& os) const;
 };
 

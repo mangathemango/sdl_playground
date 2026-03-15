@@ -7,6 +7,7 @@ template <ComponentType T> T* GameObj::getComponent() {
 
 template <ComponentType T> T* GameObj::addComponent() {
     Component* component = new T();
+    component->parent = this;
     components.insert({typeid(T).hash_code(), component});
     
     return getComponent<Transform>();
