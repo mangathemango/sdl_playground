@@ -13,6 +13,7 @@
 #include <SDL_image.h>
 #include <SDL_ttf.h>
 #include <stdbool.h>
+#include <scene.h>
 
 typedef bool flag;
 
@@ -36,6 +37,7 @@ typedef struct AppResources {
  */
 typedef struct AppState {
     bool running; /**< Flag indicating if the app is running */
+    Scene scene;
 } AppState;
 
 /**

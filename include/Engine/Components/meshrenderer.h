@@ -2,6 +2,6 @@
 #include <mesh.h>
 
 struct MeshRenderer: public Component {
-    Mesh* mesh;
+    Mesh mesh;
     // furture todo: Material maybe?
 };

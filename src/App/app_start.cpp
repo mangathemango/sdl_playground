@@ -1,6 +1,9 @@
 #include <app.h>
 #include <random.h>
 #include <input.h>
+#include <meshrenderer.h>
+#include <cubemesh.h>
+#include <component.h>
 
 /*
 *   [Start] This function is called at the start of the program.
@@ -42,5 +45,15 @@ int App_Start() {
     SDL_SetRenderDrawBlendMode(app.resources.renderer, SDL_BLENDMODE_BLEND);
 
     SDL_ShowCursor(SDL_DISABLE);
+
+    GameObj camera = GameObj();
+    app.state.scene.mainCamera = camera.addComponent<Camera>();
+
+    GameObj cube = GameObj();
+    MeshRenderer* mr = cube.addComponent<MeshRenderer>();
+    mr->mesh = CubeMesh(2.0f);
+    cube.getComponent<Transform>()->position = Vec3(0,0,20);
+
+    app.state.scene.render();
     return 0;
 }
