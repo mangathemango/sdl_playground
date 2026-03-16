@@ -4,12 +4,12 @@
 
 GameObj::GameObj() {
     addComponent<Transform>();
-    app.state.scene.objs.push_back(*this);
+    app.state.scene.objs.push_back(this);
 }
 
 std::ostream& operator<<(std::ostream& os, const GameObj& obj) {
     os << "GameObj:\n";
-    os << "- Components:\n";
+    os << "- Components: " << obj.components.size() << "\n";
     for (auto it = obj.components.begin(); it != obj.components.end(); it++) {
         os << *(it->second);
     }

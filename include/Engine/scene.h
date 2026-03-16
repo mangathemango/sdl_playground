@@ -3,7 +3,7 @@
 #include <vector>
 
 struct Scene {
-    std::vector<GameObj> objs;
+    std::vector<GameObj*> objs;
     Camera* mainCamera;
 
     void render();

@@ -4,16 +4,21 @@
 #include <SDL.h>
 
 void Scene::render() {
+    std::cout << "Rendering " << objs.size() << std::endl;
     if (mainCamera == nullptr) {
         return;
     }
     Transform* cameraTf = mainCamera->parent->getComponent<Transform>();
     std::vector<Vec3> vertices;
     std::vector<int> indices;
-    for (GameObj& obj: objs) {
-        MeshRenderer* mr = obj.getComponent<MeshRenderer>();        
-        Transform* tf = obj.getComponent<Transform>();  
-        if (mr == nullptr || tf == nullptr) continue;
+    for (GameObj* obj: objs) {
+        std::cout << *obj << std::endl;
+        MeshRenderer* mr = obj->getComponent<MeshRenderer>();        
+        Transform* tf = obj->getComponent<Transform>();  
+        
+        if (mr == nullptr || tf == nullptr) {
+            continue;
+        }
         Mat4 transformation = Mat4();
 
         transformation = transformation
@@ -25,7 +30,7 @@ void Scene::render() {
         
         for (Vec3& vertex: mr->mesh.vertices) {
             Vec3 transformed = transformation * vertex;
-            cout << transformed;
+            std::cout << transformed << std::endl;
             vertices.push_back(transformed);
         }
     }

@@ -46,8 +46,12 @@ int App_Start() {
 
     SDL_ShowCursor(SDL_DISABLE);
 
-    GameObj camera = GameObj();
-    app.state.scene.mainCamera = camera.addComponent<Camera>();
+    GameObj cameraObj = GameObj();
+    Camera* camera = cameraObj.addComponent<Camera>();
+    camera->fov = 90;
+    camera->tf = cameraObj.getComponent<Transform>();
+    app.state.scene.mainCamera = camera;
+
 
     GameObj cube = GameObj();
     MeshRenderer* mr = cube.addComponent<MeshRenderer>();
