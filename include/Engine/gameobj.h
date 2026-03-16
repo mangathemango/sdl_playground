@@ -14,4 +14,16 @@ class GameObj {
     template <ComponentType T> T* getComponent();
 };
 
+template <ComponentType T> T* GameObj::getComponent() {
+    return (T*) components[typeid(T).hash_code()];
+}
+
+template <ComponentType T> T* GameObj::addComponent() {
+    Component* component = new T();
+    component->parent = this;
+    components.insert({typeid(T).hash_code(), component});
+    
+    return getComponent<T>();
+}
+
 std::ostream& operator<<(std::ostream& os, const GameObj& obj);
